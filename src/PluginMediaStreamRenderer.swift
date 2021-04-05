@@ -28,6 +28,17 @@ class PluginMediaStreamRenderer : NSObject, RTCEAGLVideoViewDelegate {
 
 		// The browser HTML view.
 		self.webView = webView
+		for sv in self.webView.subviews {
+			let svDesc = String(describing: sv)
+			if sv.isOpaque {
+				sv.isOpaque = false
+				NSLog("PluginMediaStreamRenderer#init() | clear opaque for %@", svDesc)
+			}
+			if sv.backgroundColor != UIColor.clear {
+				sv.backgroundColor = UIColor.clear
+				NSLog("PluginMediaStreamRenderer#init() | clear background color for %@", svDesc)
+			}
+		}
 		self.eventListener = eventListener
 
 		let useManualLayoutRenderer = Bundle.main.object(forInfoDictionaryKey: "UseManualLayoutRenderer") as? Bool ?? false
