@@ -205,7 +205,7 @@ function registerGlobals(doNotRestoreCallbacksSupport) {
 			'mediaDevices',
 			{
 				value: new MediaDevices(),
-				writable: false
+				writable: true
 			},
 			{
 				enumerable: false,
