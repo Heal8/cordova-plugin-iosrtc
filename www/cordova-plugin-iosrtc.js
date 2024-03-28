@@ -3,7 +3,7 @@
  * Cordova iOS plugin exposing the full WebRTC W3C JavaScript APIs
  * Copyright 2015-2017 eFace2Face, Inc. (https://eface2face.com)
  * Copyright 2015-2019 BasqueVoIPMafia (https://github.com/BasqueVoIPMafia)
- * Copyright 2017-2021 Cordova-RTC (https://github.com/cordova-rtc)
+ * Copyright 2017-2024 Cordova-RTC (https://github.com/cordova-rtc)
  * License MIT
  */
 
@@ -3834,6 +3834,7 @@ module.exports = {
 	saveBackgroundColor: saveBackgroundColor,
 	restoreBackgroundColor: restoreBackgroundColor,
 	setMaximizedState: setMaximizedState,
+	adjustUIHierarchy: adjustUIHierarchy,
 
 	// Debug Stores to see what happens internally.
 	mediaStreamRenderers: mediaStreamRenderers,
@@ -4095,6 +4096,21 @@ function setMaximizedState(isMaximized) {
 		}
 
 		exec(onResultOK, onResultError, 'iosrtcPlugin', 'setMaximizedState', [isMaximized]);
+	});
+}
+
+function adjustUIHierarchy(active) {
+	return new Promise(function (resolve, reject) {
+		// jshint unused:false
+		function onResultOK(data) {
+			resolve();
+		}
+
+		function onResultError(error) {
+			reject(error);
+		}
+
+		exec(onResultOK, onResultError, 'iosrtcPlugin', 'adjustUIHierarchy', [active]);
 	});
 }
 

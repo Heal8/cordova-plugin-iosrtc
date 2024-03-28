@@ -73,6 +73,7 @@ module.exports = {
 	saveBackgroundColor: saveBackgroundColor,
 	restoreBackgroundColor: restoreBackgroundColor,
 	setMaximizedState: setMaximizedState,
+	adjustUIHierarchy: adjustUIHierarchy,
 
 	// Debug Stores to see what happens internally.
 	mediaStreamRenderers: mediaStreamRenderers,
@@ -334,5 +335,20 @@ function setMaximizedState(isMaximized) {
 		}
 
 		exec(onResultOK, onResultError, 'iosrtcPlugin', 'setMaximizedState', [isMaximized]);
+	});
+}
+
+function adjustUIHierarchy(active) {
+	return new Promise(function (resolve, reject) {
+		// jshint unused:false
+		function onResultOK(data) {
+			resolve();
+		}
+
+		function onResultError(error) {
+			reject(error);
+		}
+
+		exec(onResultOK, onResultError, 'iosrtcPlugin', 'adjustUIHierarchy', [active]);
 	});
 }

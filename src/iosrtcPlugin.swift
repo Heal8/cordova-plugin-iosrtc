@@ -1,5 +1,6 @@
 import Foundation
 import AVFoundation
+import WebKit
 
 
 @objc(iosrtcPlugin) // This class must be accesible from Objective-C.
@@ -1524,4 +1525,54 @@ class iosrtcPlugin : CDVPlugin {
 		)
 	}
 
+	func containsWKWebView(_ view: UIView) -> Bool {
+		if view is WKWebView {
+			return true
+		} else {
+			for subView in view.subviews {
+				let found = containsWKWebView(subView)
+				if found {
+					return true
+				}
+			}
+			return false
+		}
+	}
+
+	func adjustWindows(_ windows: [UIWindow]) {
+		let windowRange = 0..<windows.count
+		for i in windowRange {
+			NSLog("iosrtcPlugin#adjustWindows() 1")
+			let window = windows[i]
+			if window.isKeyWindow && !self.containsWKWebView(window) {
+				window.isHidden = true
+				NSLog("iosrtcPlugin#adjustWindows() 2")
+				if #available(iOS 13.0, *) {
+					window.windowScene = nil
+					NSLog("iosrtcPlugin#adjustWindows() 3")
+				}
+			}
+		}
+	}
+
+	@objc(adjustUIHierarchy:) func adjustUIHierarchy(_ command: CDVInvokedUrlCommand) {
+		NSLog("adjustUIHierarchy()")
+
+		DispatchQueue.main.async {
+			if #available(iOS 13.0, *) {
+				let allScenes = UIApplication.shared.connectedScenes
+				for scene in allScenes {
+					guard let windowScene = scene as? UIWindowScene else { continue }
+					self.adjustWindows(windowScene.windows)
+				}
+			} else {
+				let windows = UIApplication.shared.windows
+				self.adjustWindows(windows)
+			}
+		}
+
+		self.emit(command.callbackId,
+				result: CDVPluginResult(status: CDVCommandStatus_OK)
+		)
+	}
 }
